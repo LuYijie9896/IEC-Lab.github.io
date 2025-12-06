@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>研究详情 | IEC-Lab</title>
+    <style>
+        /* 复用部分样式以保持统一 */
+        :root { --primary: #007aff; --dark: #1d1d1f; }
+        body { margin: 0; font-family: -apple-system, sans-serif; color: #333; line-height: 1.8; }
+        
+        /* 顶部返回导航 */
+        .nav-bar {
+            padding: 20px 40px; display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.8); backdrop-filter: blur(20px); position: sticky; top: 0; z-index: 100;
+        }
+        .back-btn { font-weight: 500; text-decoration: none; color: var(--primary); font-size: 14px; }
+        .logo { font-weight: bold; }
+
+        /* 详情页 Header */
+        .article-header {
+            text-align: center; padding: 100px 20px 60px; max-width: 800px; margin: 0 auto;
+        }
+        .tag { color: var(--primary); font-weight: 600; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 15px; display: block; }
+        h1 { font-size: 3rem; margin-bottom: 20px; line-height: 1.1; letter-spacing: -1px; }
+        .intro { font-size: 1.3rem; color: #666; font-weight: 300; }
+
+        /* 大图 */
+        .hero-img {
+            width: 90%; max-width: 1200px; height: 500px; margin: 0 auto 60px; display: block;
+            border-radius: 20px; object-fit: cover; box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        /* 文章内容 */
+        .content { max-width: 700px; margin: 0 auto 100px; padding: 0 20px; font-size: 1.1rem; }
+        .content h2 { margin-top: 50px; font-size: 2rem; }
+        .content p { margin-bottom: 30px; color: #444; }
+        
+        /* 底部 */
+        footer { text-align: center; padding: 40px; color: #999; font-size: 12px; background: #f5f5f7; }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-bar">
+        <div class="logo">IEC-Lab Research</div>
+        <a href="index.html" class="back-btn">← 返回首页</a>
+    </nav>
+
+    <article>
+        <div class="article-header">
+            <span class="tag">Research Field</span>
+            <h1>智能驾驶与决策控制系统</h1>
+            <p class="intro">我们致力于通过深度强化学习，解决复杂城市工况下的自动驾驶路径规划难题。</p>
+        </div>
+
+        <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=1600&auto=format&fit=crop" class="hero-img" alt="Detail Image">
+
+        <div class="content">
+            <h2>项目背景</h2>
+            <p>随着人工智能技术的飞速发展，自动驾驶已成为汽车工业未来的核心竞争力。然而，在混合交通流（人车混行）的复杂场景下，如何保证车辆的安全性和通行效率，仍是一个巨大的挑战。</p>
+
+            <h2>我们的方法</h2>
+            <p>实验室团队采用了基于 <strong>Deep Reinforcement Learning (DRL)</strong> 的端到端控制方案。通过在仿真环境（如 CARLA, AirSim）中进行数百万公里的虚拟训练，我们的算法展现出了超越传统规则方法的适应性。</p>
+
+            <h2>主要成果</h2>
+            <ul>
+                <li>发表 Top 期刊论文 5 篇 (IEEE T-ITS, TVT)</li>
+                <li>获得 xx 省级科技竞赛一等奖</li>
+                <li>与 xx 汽车企业达成预研合作</li>
+            </ul>
+        </div>
+    </article>
+
+    <footer>IEC-Lab-NBUT</footer>
+
+</body>
+</html>
