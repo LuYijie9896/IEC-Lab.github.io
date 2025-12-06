@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IEC-Lab-NBUT | 智能驾驶与汽车电子实验室</title>
+    <style>
+        /* --- 全局与重置 --- */
+        :root {
+            --primary: #007aff; /* Apple Blue */
+            --dark: #1d1d1f;
+            --light-gray: #f5f5f7;
+            --glass: rgba(255, 255, 255, 0.8);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+        body { background-color: #fff; color: var(--dark); overflow-x: hidden; }
+        a { text-decoration: none; color: inherit; cursor: pointer; }
+        ul { list-style: none; }
+
+        /* --- 导航栏 (含下拉菜单) --- */
+        header {
+            position: fixed; top: 0; width: 100%; height: 60px;
+            background: rgba(255,255,255,0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            z-index: 999; border-bottom: 1px solid rgba(0,0,0,0.1); transition: 0.3s;
+        }
+        .nav-container {
+            max-width: 1000px; margin: 0 auto; height: 100%;
+            display: flex; justify-content: space-between; align-items: center; padding: 0 20px;
+        }
+        .logo { font-weight: 600; font-size: 1.1rem; letter-spacing: -0.5px; }
+        
+        /* 菜单项 */
+        .nav-menu { display: flex; gap: 40px; height: 100%; align-items: center; }
+        .nav-item { position: relative; height: 100%; display: flex; align-items: center; }
+        .nav-item > a { font-size: 14px; opacity: 0.8; transition: 0.3s; }
+        .nav-item:hover > a { opacity: 1; color: var(--primary); }
+
+        /* 下拉菜单核心样式 */
+        .dropdown {
+            position: absolute; top: 60px; left: 50%; transform: translateX(-50%);
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
+            width: 200px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 12px;
+            padding: 10px 0; opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            transform-origin: top center; scale: 0.95;
+        }
+        /* 鼠标悬停时显示下拉 */
+        .nav-item:hover .dropdown { opacity: 1; visibility: visible; scale: 1; }
+        
+        .dropdown a {
+            display: block; padding: 10px 20px; font-size: 13px; color: #333;
+            transition: 0.2s;
+        }
+        .dropdown a:hover { background: #f5f5f7; color: var(--primary); }
+
+        /* --- Hero 区域 (全屏背景) --- */
+        .hero {
+            height: 100vh; position: relative; display: flex; align-items: center; justify-content: center; text-align: center;
+            /* 背景图：未来感汽车 */
+            background: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=2560&auto=format&fit=crop') no-repeat center center/cover;
+            color: #fff;
+        }
+        .hero::after {
+            content: ''; position: absolute; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.4); /* 遮罩层让文字更清晰 */
+        }
+        .hero-content { position: relative; z-index: 2; max-width: 800px; padding: 20px; }
+        .hero h1 { font-size: 4rem; font-weight: 700; letter-spacing: -2px; margin-bottom: 20px; opacity: 0; animation: fadeUp 1s 0.5s forwards; }
+        .hero p { font-size: 1.5rem; font-weight: 300; opacity: 0; animation: fadeUp 1s 0.8s forwards; }
+        
+        /* 初始动画 */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- 苹果式 Scroll Reveal 动画类 --- */
+        .reveal {
+            opacity: 0; transform: translateY(50px); transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* --- 研究方向 (图片卡片) --- */
+        .section { padding: 120px 20px; max-width: 1200px; margin: 0 auto; }
+        .section-header { text-align: center; margin-bottom: 80px; }
+        .section-header h2 { font-size: 3rem; font-weight: 600; margin-bottom: 15px; letter-spacing: -1px; }
+
+        .research-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; }
+        
+        .card {
+            background: #fff; border-radius: 20px; overflow: hidden; cursor: pointer;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05); transition: transform 0.4s ease;
+            text-align: left; position: relative;
+        }
+        .card:hover { transform: scale(1.02); box-shadow: 0 20px 60px rgba(0,0,0,0.12); }
+        
+        .card-img {
+            height: 250px; width: 100%; object-fit: cover;
+        }
+        .card-body { padding: 30px; }
+        .card h3 { font-size: 1.5rem; margin-bottom: 10px; font-weight: 600; }
+        .card p { font-size: 1rem; color: #666; line-height: 1.6; }
+        .card-link {
+            display: inline-block; margin-top: 20px; color: var(--primary); font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .card-link:hover { text-decoration: underline; }
+
+        /* --- 团队部分 --- */
+        .team-section { background: #f5f5f7; }
+        .team-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+        .member {
+            background: #fff; padding: 15px 30px; border-radius: 50px; font-size: 1.1rem;
+            font-weight: 500; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Footer */
+        footer { background: #111; color: #888; padding: 60px 20px; text-align: center; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo">IEC-Lab-NBUT</div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html">首页</a></li>
+                
+                <li class="nav-item">
+                    <a href="#research">研究方向 ▾</a>
+                    <div class="dropdown">
+                        <a href="detail.html">汽车电子</a>
+                        <a href="detail.html">智能驾驶</a>
+                        <a href="detail.html">视觉算法</a>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#team">团队成员 ▾</a>
+                    <div class="dropdown">
+                        <a href="#">指导教师</a>
+                        <a href="#">博士/硕士研究生</a>
+                        <a href="#">往届校友</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Future Mobility.</h1>
+            <p>定义下一代智能驾驶与感知系统</p>
+        </div>
+    </section>
+
+    <section id="research" class="section">
+        <div class="section-header reveal">
+            <h2>主要研究领域</h2>
+            <p style="color:#86868b; font-size:1.2rem;">探索前沿科技，驱动产业变革。</p>
+        </div>
+
+        <div class="research-grid">
+            <div class="card reveal" onclick="window.location.href='detail.html'">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop" class="card-img" alt="Chip">
+                <div class="card-body">
+                    <h3>汽车电子架构</h3>
+                    <p>研究高性能车载计算平台、ECU 设计及车内高速网络通信协议。</p>
+                    <span class="card-link">了解更多 &rarr;</span>
+                </div>
+            </div>
+
+            <div class="card reveal" onclick="window.location.href='detail.html'">
+                <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=800&auto=format&fit=crop" class="card-img" alt="Robot">
+                <div class="card-body">
+                    <h3>智能驾驶决策</h3>
+                    <p>基于强化学习的路径规划算法与多车协同控制系统。</p>
+                    <span class="card-link">了解更多 &rarr;</span>
+                </div>
+            </div>
+
+            <div class="card reveal" onclick="window.location.href='detail.html'">
+                <img src="https://images.unsplash.com/photo-1555255707-c07966088b7b?q=80&w=800&auto=format&fit=crop" class="card-img" alt="Eye">
+                <div class="card-body">
+                    <h3>计算机视觉</h3>
+                    <p>复杂交通环境下的目标检测、语义分割与3D场景重建。</p>
+                    <span class="card-link">了解更多 &rarr;</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="team" class="section team-section reveal">
+        <div class="section-header">
+            <h2>我们的团队</h2>
+            <p style="color:#86868b;">汇聚顶尖人才，共创科研成果。</p>
+        </div>
+        <div class="team-list" id="team-container">
+            </div>
+    </section>
+
+    <footer>
+        <p>Copyright © 2025 IEC-Lab-NBUT. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // 1. 团队数据 (方便修改)
+        const team = ["康铭鑫 (导师)", "王建民 (导师)", "谭彪 (导师)", "彭博 (导师)", "胡斌 (负责人)", "张三", "李四"];
+        const teamContainer = document.getElementById('team-container');
+        team.forEach(name => {
+            teamContainer.innerHTML += `<div class="member">${name}</div>`;
+        });
+
+        // 2. 苹果式 Scroll Reveal 动画脚本
+        // 监听元素是否进入屏幕，进入则添加 'active' 类
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 }); // 露出10%就开始动画
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
